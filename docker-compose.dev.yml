@@ -25,5 +25,15 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  pgAdmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin.vod@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: vodpass
+    ports:
+      - 8081:80
+    depends_on:
+      - db
+
 volumes:
   postgres_data:
