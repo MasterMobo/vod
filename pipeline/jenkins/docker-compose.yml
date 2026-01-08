@@ -10,38 +10,14 @@ services:
       - "9999:8080" # Jenkins web UI
       - "50000:50000" # Jenkins agent port
     environment:
-      # Connect to Docker-in-Docker daemon
-      DOCKER_HOST: tcp://docker-dind:2375
+      DOCKER_HOST: unix:///var/run/docker.sock
     env_file: .env
     volumes:
       - jenkins-data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
     user: root
-    depends_on:
-      - docker-dind
     networks:
       - default # Use default network so Jenkins can access other services if needed
 
-  # Docker-in-Docker (DinD) - provides a Docker daemon for Jenkins to use
-  # This is more reliable than trying to proxy Docker Desktop's socket
-  docker-dind:
-    image: docker:dind
-    container_name: docker-dind
-    privileged: true
-    environment:
-      DOCKER_TLS_CERTDIR: ""
-    env_file: .env
-    volumes:
-      - docker-dind-data:/var/lib/docker
-    networks:
-      - default
-    restart: unless-stopped
-    command:
-      [
-        "dockerd",
-        "--host=tcp://0.0.0.0:2375",
-        "--host=unix:///var/run/docker.sock",
-      ]
-
 volumes:
   jenkins-data:
-  docker-dind-data:
