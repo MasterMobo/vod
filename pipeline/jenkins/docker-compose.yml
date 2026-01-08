@@ -12,6 +12,7 @@ services:
     environment:
       # Connect to Docker-in-Docker daemon
       DOCKER_HOST: tcp://docker-dind:2375
+    env_file: .env
     volumes:
       - jenkins-data:/var/jenkins_home
     user: root
@@ -28,6 +29,7 @@ services:
     privileged: true
     environment:
       DOCKER_TLS_CERTDIR: ""
+    env_file: .env
     volumes:
       - docker-dind-data:/var/lib/docker
     networks:
