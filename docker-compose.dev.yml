@@ -4,6 +4,7 @@ services:
   server:
     build:
       context: ./server
+    image: mastermobo/vod:latest
     ports:
       - "8080:8080"
     environment:
@@ -31,7 +32,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin.vod@gmail.com
       PGADMIN_DEFAULT_PASSWORD: vodpass
     ports:
-      - 8081:80
+      - 8888:80
     depends_on:
       - db
 
