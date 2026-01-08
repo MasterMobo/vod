@@ -1,31 +1,31 @@
 #!/bin/bash
-set -e
 
-# Update system
-sudo dnf update -y
-
-# Docker is already installed on ECS-optimized AMIs
-sudo systemctl enable docker
-sudo systemctl start docker
-
-# Allow ec2-user to run docker
-sudo usermod -aG docker ec2-user
-
-# Install Docker Compose v2 plugin
-sudo mkdir -p /usr/local/lib/docker/cli-plugins
-
-sudo curl -SL https://github.com/docker/compose/releases/download/v2.25.0/docker-compose-linux-x86_64 \
-  -o /usr/local/lib/docker/cli-plugins/docker-compose
-
-sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
-
-# Verify
-sudo docker --version
-sudo docker compose version
+# Update the system
+sudo apt-get update -y
+sudo apt-get upgrade -y
 
 # Install Git
-sudo dnf install -y git
+sudo apt-get install -y git
+
+# Install Docker
+sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update -y
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+
+# Add the 'ubuntu' and 'ssm-user' to the Docker group
+sudo usermod -aG docker ubuntu
+
+# Enable and start Docker
+sudo systemctl enable docker.service
+sudo systemctl start docker.service
+
+# Install Docker Compose v2
+sudo mkdir -p /usr/local/lib/docker/cli-plugins
+sudo curl -SL https://github.com/docker/compose/releases/download/v2.40.3/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
+sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 
 # Create app directory
-sudo mkdir -p /opt/vod
-sudo chown ec2-user:ec2-user /opt/vod
+sudo mkdir -p home/ubuntu/opt/vod
+sudo chown ubuntu home/ubuntu/opt/vod

@@ -15,7 +15,7 @@ output "ec2_public_dns" {
 
 output "ssh_command" {
   description = "SSH command to connect to the instance"
-  value       = "ssh -i ~/.ssh/vod-ec2-key ec2-user@${aws_eip.vod_eip.public_ip}"
+  value       = "ssh -i ~/.ssh/vod-ec2-key ubuntu@${aws_eip.vod_eip.public_ip}"
 }
 
 output "api_url" {

@@ -3,7 +3,7 @@ version: "3.8"
 services:
   jenkins:
     build:
-      context: ./pipeline/jenkins
+      context: .
     container_name: blueocean
     restart: on-failure
     ports:
