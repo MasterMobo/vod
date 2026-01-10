@@ -31,7 +31,6 @@ pipeline {
                 echo 'Publishing build...'
                 checkout scm
                 sh '''
-                cd $WORK_DIR
                 echo $DOCKER_HUB_ACCESS_TOKEN | docker login -u $DOCKER_HUB_USERNAME --password-stdin
                 docker compose push
                 '''

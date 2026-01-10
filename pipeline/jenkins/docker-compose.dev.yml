@@ -9,8 +9,9 @@ services:
     ports:
       - "9999:8080" # Jenkins web UI
       - "50000:50000" # Jenkins agent port
-    extra_hosts:
-      - "localhost:host-gateway"
+    environment:
+      # Connect to Docker-in-Docker daemon
+      DOCKER_HOST: tcp://docker-dind:2375
     volumes:
       - jenkins-data:/var/jenkins_home
     user: root
@@ -31,8 +32,6 @@ services:
       - docker-dind-data:/var/lib/docker
     ports:
       - "2375:2375" #  expose Docker API to host
-    extra_hosts:
-      - "localhost:host-gateway"
     networks:
       - jenkins-network
     restart: unless-stopped
