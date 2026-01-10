@@ -4,47 +4,36 @@ services:
   jenkins:
     build:
       context: .
-    container_name: blueocean
+    container_name: jenkins
     restart: on-failure
     ports:
       - "9999:8080" # Jenkins web UI
       - "50000:50000" # Jenkins agent port
     environment:
       # Connect to Docker-in-Docker daemon
-      DOCKER_HOST: tcp://docker-dind:2375
+      DOCKER_HOST: tcp://docker-proxy:2375
     volumes:
       - jenkins-data:/var/jenkins_home
+    networks:
+      - jenkins-network
     user: root
     depends_on:
-      - docker-dind
-    networks:
-      - jenkins-network
+      - docker-proxy
 
-  # Docker-in-Docker (DinD) - provides a Docker daemon for Jenkins to use
-  # This is more reliable than trying to proxy Docker Desktop's socket
-  docker-dind:
-    image: docker:dind
-    container_name: docker-dind
-    privileged: true
-    environment:
-      DOCKER_TLS_CERTDIR: ""
+  docker-proxy:
+    image: alpine/socat:latest
+    container_name: docker-proxy
+    restart: always
+    # Mount the Docker socket from the host into the container
     volumes:
-      - docker-dind-data:/var/lib/docker
-    ports:
-      - "2375:2375" #  expose Docker API to host
+      - /var/run/docker.sock:/var/run/docker.sock:rw
     networks:
       - jenkins-network
-    restart: unless-stopped
-    command:
-      [
-        "dockerd",
-        "--host=tcp://0.0.0.0:2375",
-        "--host=unix:///var/run/docker.sock",
-      ]
+    # Command to run socat: listen on TCP port 2375 and forward to the Unix socket
+    command: tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
 
 volumes:
   jenkins-data:
-  docker-dind-data:
 
 networks:
   jenkins-network:
