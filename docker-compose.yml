@@ -4,7 +4,7 @@ services:
   server:
     build:
       context: ./server
-    image: mastermobo/vod:latest
+    image: mastermobo/vod:server-latest
     ports:
       - "8080:8080"
     environment:

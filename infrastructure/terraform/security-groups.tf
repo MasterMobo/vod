@@ -29,6 +29,24 @@ resource "aws_security_group" "ec2_sg" {
     description = "HTTPS"
   }
 
+  # Jenkins web UI
+  ingress {
+    from_port   = 9999
+    to_port     = 9999
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Jenkins Web UI"
+  }
+
+  # Jenkins agent port (for build agents)
+  ingress {
+    from_port   = 50000
+    to_port     = 50000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Jenkins Agent Port"
+  }
+
   # Outbound traffic
   egress {
     from_port   = 0

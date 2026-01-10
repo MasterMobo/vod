@@ -1,0 +1,41 @@
+pipeline {
+    agent {
+        node {
+            label "ci_docker_agent"
+        }
+    }
+
+    stages {
+        stage('Inititialization') {
+            steps {
+                echo 'Initializing Build...'
+                sh '''
+                git -v
+                docker -v
+                docker ps
+                docker compose version
+                '''
+            }
+        }
+        stage("Build") {
+            steps {
+                echo 'Building...'
+                checkout scm
+                sh '''
+                docker compose build --no-cache
+                '''
+            }
+        }
+        stage("Pubish") {
+            steps {
+                echo 'Publishing build...'
+                checkout scm
+                sh '''
+                cd $WORK_DIR
+                echo $DOCKER_HUB_ACCESS_TOKEN | docker login -u $DOCKER_HUB_USERNAME --password-stdin
+                docker compose push
+                '''
+            }        
+        }
+    }
+}

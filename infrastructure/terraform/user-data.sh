@@ -16,6 +16,7 @@ sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 
 # Add the 'ubuntu' and 'ssm-user' to the Docker group
 sudo usermod -aG docker ubuntu
+sudo newgrp docker
 
 # Enable and start Docker
 sudo systemctl enable docker.service
@@ -26,6 +27,13 @@ sudo mkdir -p /usr/local/lib/docker/cli-plugins
 sudo curl -SL https://github.com/docker/compose/releases/download/v2.40.3/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
 sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 
-# Create app directory
-sudo mkdir -p home/ubuntu/opt/vod
-sudo chown ubuntu home/ubuntu/opt/vod
+# Clone code base
+git clone https://github.com/MasterMobo/vod
+cd vod
+
+# Start Jenkins server
+# TODO: How to pass .env here?
+docker compose -f ./pipeline/jenkins/docker-compose.yml up -d
+
+# Start app
+docker compose up -d
