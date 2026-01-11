@@ -40,20 +40,19 @@ pipeline {
                 
                 checkout scm
                 
+                script {
+                    def ec2Ip = sh( 
+                        script: 'cd infrastructure/terraform && terraform output -raw ec2_public_ip', 
+                        returnStdout: true 
+                    )
+                    .trim() 
 
-                def ec2Ip = sh( 
-                    script: 'cd infrastructure/terraform && terraform output -raw ec2_public_ip', 
-                    returnStdout: true 
-                )
-                .trim() 
-
-                echo "EC2 IP is ${ec2Ip}"
-                
-                checkout scm
-                
-                sshagent(['ec2_ssh_key']) { 
-                    sh "ssh -o StrictHostKeyChecking=no ec2-user@${ec2Ip} uptime"
-                    echo "Hello from EC2!"    
+                    echo "EC2 IP is ${ec2Ip}"
+                                
+                    sshagent(['ec2_ssh_key']) { 
+                        sh "ssh -o StrictHostKeyChecking=no ec2-user@${ec2Ip} uptime"
+                        echo "Hello from EC2!"    
+                    }
                 }
             }
         }
