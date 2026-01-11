@@ -14,7 +14,7 @@ services:
             DOCKER_HOST: tcp://docker-proxy:2375
         volumes:
             - jenkins-data:/var/jenkins_home
-            - ~/.ssh/vod-ec2-key.pub:~/.ssh/vod-ec2-key.pub:ro
+            - /home/khoa/.ssh/vod-ec2-key.pub:/.ssh/vod-ec2-key.pub:ro
         networks:
             - jenkins-network
         user: root

@@ -25,7 +25,7 @@ variable "key_pair_name" {
 variable "public_key_path" {
   description = "Path to public SSH key"
   type        = string
-  default     = "~/.ssh/vod-ec2-key.pub"
+  default     = "/.ssh/vod-ec2-key.pub"
 }
 
 variable "allowed_ips" {
