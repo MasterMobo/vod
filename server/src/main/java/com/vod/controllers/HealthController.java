@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class HealthController {
     @GetMapping("/api/health")
     public Map<String, String> health() {
-        return Map.of("status", "UP", "message", "VOD Backend is running");
+        return Map.of("status", "UP", "message", "VOD Backend is up and running!");
     }
 }
