@@ -55,6 +55,7 @@ pipeline {
                     remote.host = ec2Ip
                     remote.user = 'ubuntu'
                     remote.credentialsId = "ec2_ssh_key" 
+                    remote.allowAnyHosts = true
 
                     sshCommand remote: remote, command: "echo Hello from EC2!"
                     sshCommand remote: remote, command: "ls -la"
