@@ -16,6 +16,9 @@ pipeline {
                     docker ps
                     docker compose version
                     terraform -v
+
+                    cd infrastructure/terraform 
+                    terraform init
                 '''
             }
         }
