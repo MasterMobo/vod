@@ -25,14 +25,7 @@ pipeline {
             steps {
                 echo 'Building...'
                 checkout scm
-                sh '''
-                docker compose build --no-cache
-                '''
-            }
-        }
-        stage("Testing") {
-            steps {
-                echo 'Running tests...'
+                sh 'docker compose build --no-cache'
             }
         }
         stage("Pubish") {
