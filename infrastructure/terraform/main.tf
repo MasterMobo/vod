@@ -79,9 +79,6 @@ resource "aws_instance" "vod_server" {
   vpc_security_group_ids = [aws_security_group.ec2_sg.id]
   # iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
 
-  # User data script runs on first boot
-  user_data = file("${path.module}/user-data.sh")
-
   # Storage
   root_block_device {
     volume_type = "gp3"
