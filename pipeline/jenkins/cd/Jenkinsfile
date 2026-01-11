@@ -59,7 +59,9 @@ pipeline {
                         remote.allowAnyHosts = true
 
                         sshCommand remote: remote, command: "echo Hello from EC2!"
+                        sleep(5)
                         sshCommand remote: remote, command: "ls -la"
+                        sleep(5)
                     }
                 }
             }
