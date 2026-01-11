@@ -49,11 +49,17 @@ pipeline {
                     .trim() 
 
                     echo "EC2 IP is ${ec2Ip}"
-                                
-                    sshagent(['ec2_ssh_key']) { 
-                        sh "ssh -o StrictHostKeyChecking=no ec2-user@${ec2Ip} uptime"
-                        echo "Hello from EC2!"    
-                    }
+
+                    def remote = [:]
+                    remote.name = 'EC2'
+                    remote.host = ec2Ip
+                    remote.user = 'ubuntu'
+                    remote.credentialsId: "ec2_ssh_key" 
+
+                    sshCommand remote: remote, command: "\
+                        echo Hello from EC2! && \
+                        ls -la
+                    "
                 }
             }
         }
