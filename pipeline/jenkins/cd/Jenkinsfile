@@ -40,25 +40,27 @@ pipeline {
             }
             steps {
                 echo 'Deploying...'
-                                
-                script {
-                    def ec2Ip = sh( 
-                        script: 'cd infrastructure/terraform && terraform output -raw ec2_public_ip', 
-                        returnStdout: true 
-                    )
-                    .trim() 
 
-                    echo "EC2 IP is ${ec2Ip}"
+                withCredentials([sshUserPrivateKey(credentialsId: 'ec2_ssh_key', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {           
+                    script {
+                        def ec2Ip = sh( 
+                            script: 'cd infrastructure/terraform && terraform output -raw ec2_public_ip', 
+                            returnStdout: true 
+                        )
+                        .trim() 
 
-                    def remote = [:]
-                    remote.name = 'EC2'
-                    remote.host = ec2Ip
-                    remote.user = 'ubuntu'
-                    remote.credentialsId = "ec2_ssh_key" 
-                    remote.allowAnyHosts = true
+                        echo "EC2 IP is ${ec2Ip}"
 
-                    sshCommand remote: remote, command: "echo Hello from EC2!"
-                    sshCommand remote: remote, command: "ls -la"
+                        def remote = [:]
+                        remote.name = 'EC2'
+                        remote.host = ec2Ip
+                        remote.user = userName
+                        remote.identityFile = identity
+                        remote.allowAnyHosts = true
+
+                        sshCommand remote: remote, command: "echo Hello from EC2!"
+                        sshCommand remote: remote, command: "ls -la"
+                    }
                 }
             }
         }
