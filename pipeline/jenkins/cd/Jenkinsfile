@@ -56,10 +56,8 @@ pipeline {
                     remote.user = 'ubuntu'
                     remote.credentialsId = "ec2_ssh_key" 
 
-                    sshCommand remote: remote, command: "\
-                        echo Hello from EC2! && \
-                        ls -la
-                    "
+                    sshCommand remote: remote, command: "echo Hello from EC2!"
+                    sshCommand remote: remote, command: "ls -la"
                 }
             }
         }
