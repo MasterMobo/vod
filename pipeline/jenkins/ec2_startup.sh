@@ -28,8 +28,10 @@ sudo curl -SL https://github.com/docker/compose/releases/download/v2.40.3/docker
 sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 
 # Clone code base
+if [ -d "vod" ]; then rm -rf vod; fi  # Fresh code base
 git clone https://github.com/MasterMobo/vod
 cd vod
 
 # Start app
+docker compose pull
 docker compose up -d
