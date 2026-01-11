@@ -23,7 +23,7 @@ RUN apt-get update && \
       -o /usr/local/bin/docker-compose && \
     chmod +x /usr/local/bin/docker-compose
 
-ARG TERRAFORM_VERSION=1.8.0
+ARG TERRAFORM_VERSION=1.14.3
 
 # Install Terraform
 RUN apt-get update && apt-get install -y \
