@@ -47,7 +47,7 @@ pipeline {
                 
                 checkout scm
                 
-                sshagent(['my-ec2-key']) { 
+                sshagent(['ec2_ssh_key']) { 
                     sh 'ssh -o StrictHostKeyChecking=no ec2-user@${EC2_IP} uptime' 
                     echo "Hello from EC2!"    
                 }
