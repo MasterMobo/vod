@@ -1,0 +1,52 @@
+pipeline {
+    agent {
+        node {
+            label "cd_docker_agent"
+        }
+    }
+
+    stages {
+        stage('Inititialization') {
+            steps {
+                echo 'Initializing Build...'
+                checkout scm
+                sh '''
+                    git -v
+                    docker -v
+                    docker ps
+                    docker compose version
+                    terraform -v
+                '''
+            }
+        }
+        stage('Provision') {
+            steps {
+                echo "Provisioning Infrastructure..."
+                sh '''
+                    cd infrastructure/terraform
+                    terraform init
+                    terraform apply -auto-approve
+                '''
+            }
+        }
+        stage("Deploy") {
+            environment {
+                EC2_IP = ""
+            }
+            steps {
+                echo 'Deploying...'
+                checkout scm
+                sh '''
+                    cd infrastructure/terraform
+                    EC2_IP = $(terraform output | grep ec2_public_ip | cut -d '"' -f 2)
+                '''
+                checkout scm
+                sh '''
+                    ssh -i ~/.ssh/vod-ec2-key ubuntu@$EC2_IP
+                    echo "Hello from EC2!"
+                '''
+            }
+        }
+    }
+}
+

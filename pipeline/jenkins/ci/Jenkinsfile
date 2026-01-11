@@ -26,6 +26,11 @@ pipeline {
                 '''
             }
         }
+        stage("Testing") {
+            steps {
+                echo 'Running tests...'
+            }
+        }
         stage("Pubish") {
             steps {
                 echo 'Publishing build...'
@@ -38,3 +43,4 @@ pipeline {
         }
     }
 }
+

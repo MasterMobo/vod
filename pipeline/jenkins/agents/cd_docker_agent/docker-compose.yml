@@ -4,4 +4,4 @@ services:
     ci-docker-agent:
         build:
             context: .
-        image: mastermobo/vod:ci-docker-agent-latest
+        image: mastermobo/vod:cd-docker-agent-latest

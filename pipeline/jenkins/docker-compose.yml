@@ -1,23 +1,23 @@
 version: "3.8"
 
 services:
-  jenkins:
-    build:
-      context: .
-    container_name: blueocean
-    restart: on-failure
-    ports:
-      - "9999:8080" # Jenkins web UI
-      - "50000:50000" # Jenkins agent port
-    environment:
-      DOCKER_HOST: unix:///var/run/docker.sock
-    env_file: .env
-    volumes:
-      - jenkins-data:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
-    user: root
-    networks:
-      - default # Use default network so Jenkins can access other services if needed
+    jenkins:
+        build:
+            context: .
+        container_name: blueocean
+        restart: on-failure
+        ports:
+            - "9999:8080" # Jenkins web UI
+            - "50000:50000" # Jenkins agent port
+        environment:
+            DOCKER_HOST: unix:///var/run/docker.sock
+        env_file: .env
+        volumes:
+            - jenkins-data:/var/jenkins_home
+            - /var/run/docker.sock:/var/run/docker.sock
+        user: root
+        networks:
+            - default # Use default network so Jenkins can access other services if needed
 
 volumes:
-  jenkins-data:
+    jenkins-data:
