@@ -5,6 +5,10 @@ pipeline {
         }
     }
 
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials("dockerhub_credentials")
+    }
+
     stages {
         stage('Inititialization') {
             steps {
@@ -36,10 +40,15 @@ pipeline {
                 echo 'Publishing build...'
                 checkout scm
                 sh '''
-                echo $DOCKER_HUB_ACCESS_TOKEN | docker login -u $DOCKER_HUB_USERNAME --password-stdin
+                echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
                 docker compose push
                 '''
             }        
+        }
+    }
+    post {
+        always {
+            sh 'docker logout'
         }
     }
 }
