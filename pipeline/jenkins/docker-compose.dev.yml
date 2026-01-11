@@ -15,6 +15,7 @@ services:
         volumes:
             - jenkins-data:/var/jenkins_home
             - /home/khoa/.ssh/vod-ec2-key.pub:/.ssh/vod-ec2-key.pub:ro
+            - ./ec2_startup.sh:/ec2_startup.sh:ro
         networks:
             - jenkins-network
         user: root

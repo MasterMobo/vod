@@ -31,9 +31,5 @@ sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 git clone https://github.com/MasterMobo/vod
 cd vod
 
-# Start Jenkins server
-# TODO: How to pass .env here?
-docker compose -f ./pipeline/jenkins/docker-compose.yml up -d
-
 # Start app
 docker compose up -d

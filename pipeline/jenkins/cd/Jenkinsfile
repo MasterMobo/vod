@@ -60,8 +60,8 @@ pipeline {
 
                         sshCommand remote: remote, command: "echo Hello from EC2!"
                         sleep(5)
-                        sshCommand remote: remote, command: "ls -la"
-                        sleep(5)
+                        sshScript remote: remote, script: "/ec2_startup.sh"
+                        sleep(30)
                     }
                 }
             }
