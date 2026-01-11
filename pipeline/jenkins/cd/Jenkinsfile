@@ -40,9 +40,7 @@ pipeline {
             }
             steps {
                 echo 'Deploying...'
-                
-                checkout scm
-                
+                                
                 script {
                     def ec2Ip = sh( 
                         script: 'cd infrastructure/terraform && terraform output -raw ec2_public_ip', 
