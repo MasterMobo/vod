@@ -25,7 +25,7 @@ RUN apt-get update && \
 
 ARG TERRAFORM_VERSION=1.8.0
 
-# Install dependencies (unzip) and Terraform
+# Install Terraform
 RUN apt-get update && apt-get install -y \
     unzip  \
     && curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -o /tmp/terraform.zip \
@@ -33,5 +33,10 @@ RUN apt-get update && apt-get install -y \
     && mv /tmp/terraform /usr/local/bin/ \
     && rm /tmp/terraform.zip \
     && apt-get clean
+
+# Install AWS CLI
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    ./aws/install
 
 USER jenkins

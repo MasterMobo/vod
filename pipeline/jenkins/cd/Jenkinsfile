@@ -22,11 +22,13 @@ pipeline {
         stage('Provision') {
             steps {
                 echo "Provisioning Infrastructure..."
-                sh '''
-                    cd infrastructure/terraform
-                    terraform init
-                    terraform apply -auto-approve
-                '''
+                withCredentials([[ $class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws_cli_credentials']]){
+                    sh '''
+                        cd infrastructure/terraform
+                        terraform init
+                        terraform apply -auto-approve
+                    '''
+                }
             }
         }
         stage("Deploy") {
@@ -35,16 +37,20 @@ pipeline {
             }
             steps {
                 echo 'Deploying...'
+                
                 checkout scm
+                
                 sh '''
                     cd infrastructure/terraform
                     EC2_IP = $(terraform output | grep ec2_public_ip | cut -d '"' -f 2)
                 '''
+                
                 checkout scm
-                sh '''
-                    ssh -i ~/.ssh/vod-ec2-key ubuntu@$EC2_IP
-                    echo "Hello from EC2!"
-                '''
+                
+                sshagent(['my-ec2-key']) { 
+                    sh 'ssh -o StrictHostKeyChecking=no ec2-user@${EC2_IP} uptime' 
+                    echo "Hello from EC2!"    
+                }
             }
         }
     }

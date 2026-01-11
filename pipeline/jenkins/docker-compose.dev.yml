@@ -1,41 +1,42 @@
 version: "3.8"
 
 services:
-  jenkins:
-    build:
-      context: .
-    container_name: jenkins
-    restart: on-failure
-    ports:
-      - "9999:8080" # Jenkins web UI
-      - "50000:50000" # Jenkins agent port
-    environment:
-      # Connect to Docker-in-Docker daemon
-      DOCKER_HOST: tcp://docker-proxy:2375
-    volumes:
-      - jenkins-data:/var/jenkins_home
-    networks:
-      - jenkins-network
-    user: root
-    depends_on:
-      - docker-proxy
+    jenkins:
+        build:
+            context: .
+        container_name: jenkins
+        restart: on-failure
+        ports:
+            - "9999:8080" # Jenkins web UI
+            - "50000:50000" # Jenkins agent port
+        environment:
+            # Connect to Docker-in-Docker daemon
+            DOCKER_HOST: tcp://docker-proxy:2375
+        volumes:
+            - jenkins-data:/var/jenkins_home
+            - ~/.ssh/vod-ec2-key.pub:~/.ssh/vod-ec2-key.pub:ro
+        networks:
+            - jenkins-network
+        user: root
+        depends_on:
+            - docker-proxy
 
-  docker-proxy:
-    image: alpine/socat:latest
-    container_name: docker-proxy
-    restart: always
-    # Mount the Docker socket from the host into the container
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:rw
-    networks:
-      - jenkins-network
-    # Command to run socat: listen on TCP port 2375 and forward to the Unix socket
-    command: tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
+    docker-proxy:
+        image: alpine/socat:latest
+        container_name: docker-proxy
+        restart: always
+        # Mount the Docker socket from the host into the container
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:rw
+        networks:
+            - jenkins-network
+        # Command to run socat: listen on TCP port 2375 and forward to the Unix socket
+        command: tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
 
 volumes:
-  jenkins-data:
+    jenkins-data:
 
 networks:
-  jenkins-network:
-    name: jenkins-network
-    driver: bridge
+    jenkins-network:
+        name: jenkins-network
+        driver: bridge
